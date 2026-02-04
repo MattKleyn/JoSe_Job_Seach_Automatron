@@ -8,6 +8,7 @@ venv/
 # IDE settings
 .idea/
 .vscode/
+.idea
 
 # Python cache
 __pycache__/
@@ -21,3 +22,6 @@ __pycache__/
 # Logs (optional)
 logs/
 *.log
+
+#testing
+randData.txt
