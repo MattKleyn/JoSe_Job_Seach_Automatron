@@ -95,7 +95,6 @@ def detect_remote_from_location(raw_location:str) -> bool | None:
         location = raw_location.strip()
         location = location.encode("ascii", "ignore").decode()
         location = re.sub(r"\s+", " ", location)
-        print(location)
         remote_patterns = [
             r"(?i)\bremote\b",
             r"(?i)\bwork from home\b",
@@ -177,6 +176,8 @@ def parse_posted_date(raw_posted_date: str | None) -> datetime | None:
         post_date = re.sub(r"[!?]", "", post_date)
         post_date = re.sub(r"\s+", " ", post_date).strip()
         post_date = re.sub(r"\s*([/-])\s*", r"\1", post_date)
+        # Remove everything except digits, letters, slashes, dashes, and spaces
+        post_date = re.sub(r"[^0-9a-zA-Z/\-\s]", " ", post_date)
 
         # Relative dates
         relative_date = re.search(r"(\d+)\s*days?\s*ago",post_date)
@@ -199,13 +200,15 @@ def parse_posted_date(raw_posted_date: str | None) -> datetime | None:
             "%d %b, %Y",
             "%d %B %y",
             "%d %b %y",
+            "%m/%y",
+            "%m-%y",
+            "%m/%Y",
+            "%m-%Y",
         ]
 
         for pattern in absolute_formats:
             try:
-                post_date = datetime.strptime(post_date, pattern)
-                print("abs date with year",post_date)
-                return post_date
+                return datetime.strptime(post_date, pattern)
             except ValueError:
                 pass
 
@@ -221,7 +224,6 @@ def parse_posted_date(raw_posted_date: str | None) -> datetime | None:
 
         for pattern in no_year_formats:
             try:
-                print("abs date with year appended", post_date_with_year)
                 return datetime.strptime(post_date_with_year, pattern)
             except ValueError:
                 pass
@@ -262,7 +264,8 @@ def parse_salary(raw_salary: str | None) -> SalaryInfo | None:
 
         # 3. Convert k → 000
         salary = re.sub(r"(\d+)\s*k", lambda m: str(int(m.group(1)) * 1000), salary)
-
+        # Convert "70 000" → "70000"
+        salary = re.sub(r"(\d)\s+(\d{3})", r"\1\2", salary)
         # 4. Extract numbers
         numbers = re.findall(r"\d+", salary)
         numbers = [int(n) for n in numbers]

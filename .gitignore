@@ -23,5 +23,5 @@ __pycache__/
 logs/
 *.log
 
-#testing
-randData.txt
+#test data
+test_data.py
