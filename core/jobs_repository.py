@@ -2,6 +2,9 @@ import psycopg2
 from psycopg2.extras import Json
 from db import get_connection
 from models.normalized_job import NormalizedJob
+from ingestion.transformers import transform_raw_job
+from acceptance.gates import accept
+from main import scraper
 
 def upsert_job(job: NormalizedJob) -> None:
     try:
@@ -30,5 +33,10 @@ def upsert_job(job: NormalizedJob) -> None:
         conn.commit()
         cur.close()
         conn.close()
-    except:
-        print("Something went wrong on Upsert.")
+    except Exception as e:
+        print("Upsert failed:", e)
+
+for raw_job in scraper:
+    normalized = transform_raw_job(raw_job)
+    if accept(normalized):
+        upsert_job(normalized)
