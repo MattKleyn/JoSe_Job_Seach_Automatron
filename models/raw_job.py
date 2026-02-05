@@ -1,4 +1,4 @@
-from typing import TypedDict
+from typing import TypedDict, Optional
 
 class RawJob(TypedDict):
     '''Fields as scraped from the HTML document.'''
@@ -11,3 +11,9 @@ class RawJob(TypedDict):
     posted_raw: str | None
     salary_raw: str | None
     url: str
+
+class SalaryInfo(TypedDict):
+    min: Optional[int]
+    max: Optional[int]
+    currency: str
+    period: str
