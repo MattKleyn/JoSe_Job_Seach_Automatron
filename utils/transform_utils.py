@@ -8,9 +8,9 @@ def clean_title(raw_title:str) -> str | None:
     try:
         if not raw_title:
             return ""
-        #remove whitespace beginning and end
+        # print("title before transform", raw_title)
         title = raw_title.strip()
-        #remove emojis or non ascii characters
+
         title = title.encode("ascii", "ignore").decode()
 
         fluff_patterns = [
@@ -21,16 +21,16 @@ def clean_title(raw_title:str) -> str | None:
             r"🔥",
             r"⭐",
         ]
-        #remove the fluff
+
         for pattern in fluff_patterns:
             title = re.sub(pattern, "", title)
-        #remove excessive spaces
-        title = re.sub(r"\s+", " ", title)
-        #remove spaces around punctuation
-        title = re.sub(r"\s+([,:;.!?])", r"\1", title)
-        #remove punctuation end of string
-        title = re.sub(r"[!.,;:/]+$", "", title)
 
+        title = re.sub(r"\s+", " ", title)
+
+        title = re.sub(r"\s+([,:;.!?])", r"\1", title)
+
+        title = re.sub(r"[!.,;:/]+$", "", title)
+        # print("title after transform", title)
         return title.strip()
     except Exception:
         return None
@@ -39,7 +39,7 @@ def clean_company(raw_company:str) -> str | None:
     try:
         if not raw_company:
             return ""
-
+        # print("company before transform", raw_company)
         company = raw_company.strip()
         company = company.encode("ascii", "ignore").decode()
 
@@ -58,13 +58,13 @@ def clean_company(raw_company:str) -> str | None:
             company
         )
 
-        # Remove any leftover "(" or "(." or "(," at the end
         company = re.sub(r"\(\s*[^\w]*$", "", company)
 
         company = re.sub(r"\s+", " ", company)
         company = re.sub(r"\s+([,:;.!?])", r"\1", company)
         company = re.sub(r"[!.,;:/]+$", "", company)
         final = company.strip()
+        # print("company after transform", company)
 
         return final
     except Exception:
@@ -74,7 +74,7 @@ def normalize_location(raw_location:str) -> str | None:
     try:
         if not raw_location:
             return ""
-
+        # print("location before transform", raw_location)
         location = raw_location.strip()
         location = location.encode("ascii", "ignore").decode()
         location = re.sub(r"\s+", " ", location)
@@ -83,7 +83,7 @@ def normalize_location(raw_location:str) -> str | None:
         parts = [p.strip() for p in location.split(",") if p.strip()]
         if parts:
             return parts[0]
-
+        # print("location after transform", location)
         return location.strip()
     except Exception:
         return None
@@ -92,6 +92,7 @@ def detect_remote_from_location(raw_location:str) -> bool | None:
     try:
         if not raw_location:
             return False
+        # print("is_remote before transform", raw_location)
         location = raw_location.strip()
         location = location.encode("ascii", "ignore").decode()
         location = re.sub(r"\s+", " ", location)
@@ -106,7 +107,7 @@ def detect_remote_from_location(raw_location:str) -> bool | None:
         for pattern in remote_patterns:
             if re.search(pattern, location):
                 return True
-
+        # print("is_remote after transform", location)
         return False
     except Exception:
         return None
@@ -115,7 +116,7 @@ def detect_remote_from_text(raw_description:str) -> bool | None:
     try:
         if not raw_description:
             return False
-
+        # print("is_remote before transform", raw_description)
         text = raw_description.strip()
         text = text.encode("ascii", "ignore").decode()
         text = re.sub(r"\s+", " ", text)
@@ -135,7 +136,7 @@ def detect_remote_from_text(raw_description:str) -> bool | None:
         for pattern in remote_patterns:
             if re.search(pattern, text):
                 return True
-
+        # print("is_remote after transform", text)
         return False
     except Exception:
         return None
@@ -170,7 +171,7 @@ def parse_posted_date(raw_posted_date: str | None) -> datetime | None:
     try:
         if not raw_posted_date:
             return None
-
+        # print("post date before trans:", raw_posted_date)
         post_date = raw_posted_date.strip()
         post_date = post_date.encode("ascii", "ignore").decode()
         post_date = re.sub(r"[!?]", "", post_date)
@@ -178,7 +179,7 @@ def parse_posted_date(raw_posted_date: str | None) -> datetime | None:
         post_date = re.sub(r"\s*([/-])\s*", r"\1", post_date)
         # Remove everything except digits, letters, slashes, dashes, and spaces
         post_date = re.sub(r"[^0-9a-zA-Z/\-\s]", " ", post_date)
-
+        #print("date before category:", post_date)
         # Relative dates
         relative_date = re.search(r"(\d+)\s*days?\s*ago",post_date)
         if relative_date:
@@ -236,7 +237,7 @@ def parse_salary(raw_salary: str | None) -> SalaryInfo | None:
     try:
         if not raw_salary:
             return None
-
+        # print("salary before trn:", raw_salary)
         salary = raw_salary.lower()
         salary = salary.encode("ascii", "ignore").decode()
         salary = re.sub(r"\s+", " ", salary)
@@ -278,7 +279,7 @@ def parse_salary(raw_salary: str | None) -> SalaryInfo | None:
             min_salary = max_salary = numbers[0]
         else:
             min_salary, max_salary = numbers[0], numbers[1]
-
+        # print("salary:", numbers, period)
         return {
             "min": min_salary,
             "max": max_salary,
@@ -292,11 +293,11 @@ def extract_skills(raw_description: str | None) -> list[str]:
     try:
         if not raw_description:
             return []
-
+        # print("skills before trans:", raw_description)
         skills = raw_description.lower()
         skills = skills.encode("ascii", "ignore").decode()
         skills = re.sub(r"\s+", " ", skills)
-
+        # print("skills after trans:", skills)
         found = []
 
         for skill in SKILLS:

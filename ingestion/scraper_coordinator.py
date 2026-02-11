@@ -5,8 +5,7 @@ import requests
 def crawl_entrypoint():
     region = "south-africa"
     sector = "it"
-    entrypoint = "https://www.careers24.com/jobs/lc-gauteng/se-it/sf-12000/su-4/rmt-incl/?sort=dateposted"
-    # entrypoint = f"https://www.careers24.com/jobs/lc-{region}/se-{sector}/rmt-incl/?sort=dateposted"
+    entrypoint = f"https://www.careers24.com/jobs/lc-{region}/se-{sector}/rmt-incl/?sort=dateposted"
     return entrypoint
 
 

@@ -1,5 +1,5 @@
 MY_TECH_SKILLS = [
-    "python", "sql", "docker", "aws", "django", "flask", "postgres"
+    "python", "sql", "postgres", "javascript", "html", "html5", "css", "css3", "react", "node", "node.js", "express", "express.js", "ejs", "git", "webflow", "figma", "jquery"
 ]
 
 MAX_JOB_AGE_DAYS = 30

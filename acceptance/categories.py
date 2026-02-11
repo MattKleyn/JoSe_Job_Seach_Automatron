@@ -1,10 +1,10 @@
 CATEGORY_KEYWORDS = {
-    "frontend": ["frontend", "front end", "react", "javascript", "ui"],
+    "frontend": ["frontend", "front end", "react", "javascript", "ui", "ux", "ux/ui", "webflow"],
     "backend": ["backend", "back end", "python", "django", "flask", "api"],
     "fullstack": ["fullstack", "full stack"],
-    "data": ["data analyst", "data engineer", "machine learning"],
-    "devops": ["devops", "cloud", "infrastructure"],
-    "mobile": ["android", "ios", "flutter", "react native"],
+    "data": ["data analyst", "data engineer"],
+    # "devops": ["devops", "cloud", "infrastructure"],
+    # "mobile": ["android", "ios", "flutter", "react native"],
 }
 
 def detect_category(title: str | None) -> str | None:
