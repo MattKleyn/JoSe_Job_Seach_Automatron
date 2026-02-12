@@ -180,20 +180,32 @@ def parse_posted_date(raw_posted_date: str | None) -> datetime | None:
             return None
         # print("post date before trans:", raw_posted_date)
         post_date = raw_posted_date.strip()
+        # print("after .strip space:", post_date)
         post_date = post_date.encode("ascii", "ignore").decode()
-        post_date = re.sub(r"[!?]", "", post_date)
+        # print("after emoji:", post_date)
+        post_date = re.sub(r"[^\w\s/-]", " ", post_date)
         post_date = re.sub(r"\s+", " ", post_date).strip()
+        # print("after normalize spacing:", post_date)
         post_date = re.sub(r"\s*([/-])\s*", r"\1", post_date)
-        # Remove everything except digits, letters, slashes, dashes, and spaces
-        post_date = re.sub(r"[^0-9a-zA-Z/\-\s]", " ", post_date)
-        #print("date before category:", post_date)
+        # print("after normalize space around charcter?:", post_date)
+
         # Relative dates
         relative_date = re.search(r"(\d+)\s*days?\s*ago",post_date)
+        # print("relative date:", relative_date)
         if relative_date:
-            return datetime.today() - timedelta(days=int(relative_date.group(1)))
+            posted = datetime.today() - timedelta(days=int(relative_date.group(1)))
+            posted = posted.date() if posted else None
+            return posted
 
         if "yesterday" in post_date:
-            return datetime.today() - timedelta(days=1)
+            posted = datetime.today() - timedelta(days=1)
+            posted = posted.date() if posted else None
+            return posted
+
+        if "today" in post_date:
+            posted = datetime.today()
+            posted = posted.date() if posted else None
+            return posted
 
         # Absolute dates with a year
         absolute_formats = [
@@ -201,6 +213,9 @@ def parse_posted_date(raw_posted_date: str | None) -> datetime | None:
             "%d/%m/%Y",
             "%d-%m-%y",
             "%d/%m/%y",
+            "%m %d %y",
+            "%m-%d-%y",
+            "%m/%d/%y",
             "%Y-%m-%d",
             "%d %B %Y",
             "%d %b %Y",
@@ -216,7 +231,10 @@ def parse_posted_date(raw_posted_date: str | None) -> datetime | None:
 
         for pattern in absolute_formats:
             try:
-                return datetime.strptime(post_date, pattern)
+                # print("with year:", post_date)
+                posted = datetime.strptime(post_date, pattern)
+                posted = posted.date() if posted else None
+                return posted
             except ValueError:
                 pass
 
@@ -232,10 +250,12 @@ def parse_posted_date(raw_posted_date: str | None) -> datetime | None:
 
         for pattern in no_year_formats:
             try:
-                return datetime.strptime(post_date_with_year, pattern)
+                # print("no year:", post_date_with_year)
+                posted = datetime.strptime(post_date_with_year, pattern)
+                posted = posted.date() if posted else None
+                return posted
             except ValueError:
                 pass
-
         return None
     except Exception:
         return None

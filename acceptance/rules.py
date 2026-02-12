@@ -22,7 +22,13 @@ def is_recent(job):
     posted = job.get("posted_at")
     if not posted:
         return False
-    return posted >= datetime.today() - timedelta(days=MAX_JOB_AGE_DAYS)
+
+    if isinstance(posted, datetime):
+        posted = posted.date()
+
+    cutoff = (datetime.today() - timedelta(days=MAX_JOB_AGE_DAYS)).date()
+    print("posted:", posted, "cutoff:", cutoff, "result:", posted >= cutoff)
+    return posted >= cutoff
 
 
 def matches_location(job):
