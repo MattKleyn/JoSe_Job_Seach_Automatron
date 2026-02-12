@@ -1,6 +1,8 @@
 import re
 from bs4 import BeautifulSoup
 import requests
+from ingestion.scraper_fallbacks import extract_with_fallback, FIELD_SELECTORS
+
 
 def crawl_entrypoint():
     region = "south-africa"
@@ -10,7 +12,7 @@ def crawl_entrypoint():
 
 
 def crawl_listings_page(crawl_entrypoint):
-    res = requests.get(crawl_entrypoint)
+    res = requests.get(crawl_entrypoint, timeout=10, headers={"User-Agent": "Mozilla/5.0"})
     soup = BeautifulSoup(res.text, 'html.parser')
 
     job_entries = []
@@ -28,32 +30,15 @@ def crawl_listings_page(crawl_entrypoint):
 
 def scrape_job(job_entry):
     try:
-        res = requests.get(job_entry[0])
+        res = requests.get(job_entry[0], timeout=10, headers={"User-Agent": "Mozilla/5.0"})
         soup = BeautifulSoup(res.text, 'html.parser')
-        title = soup.find("h1").contents[2].getText()
-        details_list = soup.select(".detailsList")
-        details = details_list[0]
-        location_li = details.select_one("li")
-        location_text = location_li.get_text(separator=" ", strip=True)
-        salary_li = details.find("li", class_="elipses")
-        salary_text = salary_li.get_text(" ", strip=True)
-        ref_li = details.select(" li")[4].getText()
-        external_id = re.sub(r"(?i)reference:", "", ref_li)
-        company = soup.find("strong").getText()
-        description1 = soup.select_one(".v-descrip")
-        description2 = soup.select_one(".c24-vacancy-details")
-        if description1:
-            paragraphs = description1.find_all("p")
-            description_text = "\n".join(
-                p.get_text(" ", strip=True) for p in paragraphs
-            )
-        elif description2:
-            paragraphs = description2.find_all("p")
-            description_text = "\n".join(
-                p.get_text(" ", strip=True) for p in paragraphs
-            )
-        else:
-            description_text = None
+
+        external_id = extract_with_fallback(soup, FIELD_SELECTORS["external_id"])
+        title = extract_with_fallback(soup, FIELD_SELECTORS["title"])
+        company = extract_with_fallback(soup, FIELD_SELECTORS["company"])
+        location_text = extract_with_fallback(soup, FIELD_SELECTORS["location"])
+        description_text = extract_with_fallback(soup, FIELD_SELECTORS["description"])
+        salary_text = extract_with_fallback(soup, FIELD_SELECTORS["salary"])
 
         return {
             "source": "Careers24",

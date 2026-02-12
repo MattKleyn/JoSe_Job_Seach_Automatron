@@ -7,6 +7,7 @@ CATEGORY_KEYWORDS = {
     # "mobile": ["android", "ios", "flutter", "react native"],
 }
 
+
 def detect_category(title: str | None) -> str | None:
     if not title:
         return None

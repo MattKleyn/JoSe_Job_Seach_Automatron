@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from models.raw_job import SalaryInfo
 from utils.skills import SKILLS
 
+
 def clean_title(raw_title:str) -> str | None:
     try:
         if not raw_title:
@@ -34,6 +35,7 @@ def clean_title(raw_title:str) -> str | None:
         return title.strip()
     except Exception:
         return None
+
 
 def clean_company(raw_company:str) -> str | None:
     try:
@@ -70,6 +72,7 @@ def clean_company(raw_company:str) -> str | None:
     except Exception:
         return None
 
+
 def normalize_location(raw_location:str) -> str | None:
     try:
         if not raw_location:
@@ -87,6 +90,7 @@ def normalize_location(raw_location:str) -> str | None:
         return location.strip()
     except Exception:
         return None
+
 
 def detect_remote_from_location(raw_location:str) -> bool | None:
     try:
@@ -111,6 +115,7 @@ def detect_remote_from_location(raw_location:str) -> bool | None:
         return False
     except Exception:
         return None
+
 
 def detect_remote_from_text(raw_description:str) -> bool | None:
     try:
@@ -141,6 +146,7 @@ def detect_remote_from_text(raw_description:str) -> bool | None:
     except Exception:
         return None
 
+
 def clean_description(raw_description:str) -> str | None:
     try:
         if not raw_description:
@@ -166,6 +172,7 @@ def clean_description(raw_description:str) -> str | None:
         return text.strip()
     except Exception:
         return None
+
 
 def parse_posted_date(raw_posted_date: str | None) -> datetime | None:
     try:
@@ -233,6 +240,7 @@ def parse_posted_date(raw_posted_date: str | None) -> datetime | None:
     except Exception:
         return None
 
+
 def parse_salary(raw_salary: str | None) -> SalaryInfo | None:
     try:
         if not raw_salary:
@@ -289,6 +297,7 @@ def parse_salary(raw_salary: str | None) -> SalaryInfo | None:
     except Exception:
         return None
 
+
 def extract_skills(raw_description: str | None) -> list[str]:
     try:
         if not raw_description:
@@ -308,6 +317,7 @@ def extract_skills(raw_description: str | None) -> list[str]:
 
     except Exception:
         return []
+
 
 def detect_language(raw_description:str) -> str | None:
     try:

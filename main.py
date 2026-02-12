@@ -19,12 +19,12 @@ def run_ingestion():
         if accept(normalized):
             upsert_job(normalized)
 
-        # Optional: print for debugging
         print("---- RAW ----")
         print(raw)
         print("---- NORMALIZED ----")
         print(normalized)
         print("---- ACCEPTED ----" if accept(normalized) else "---- REJECTED ----")
         print()
+
 
 run_ingestion()

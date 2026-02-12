@@ -1,15 +1,12 @@
 from datetime import datetime, timedelta
-from acceptance.config import MY_TECH_SKILLS, MAX_JOB_AGE_DAYS, ACCEPT_COUNTRY
+from acceptance.config import MY_TECH_SKILLS, MAX_JOB_AGE_DAYS, ACCEPT_COUNTRY, BE_REMOTE
 from acceptance.categories import detect_category
 from acceptance.seniority import detect_seniority
-from acceptance.config import BE_REMOTE
+
 
 def has_required_fields(job):
     return all([
         job.get("title"),
-        job.get("company"),
-        job.get("url"),
-        job.get("source"),
         job.get("external_id"),
         job.get("description"),
     ])
